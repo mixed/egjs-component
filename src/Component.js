@@ -234,6 +234,7 @@ class Some extends eg.Component {
 	activate() {
 		const {element} = this.param;
 		const {options} = this.param;
+
 		if (!this.props.activate && this.trigger("beforeActivate")) {
 			if (this.setupProp && this.trigger("beforeSetupProp")) {
 				this.setupProp(element, options);
