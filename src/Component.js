@@ -17,8 +17,8 @@ class Component {
 		this.options = {};
 		this.props = {};
 		this.param = {
-			element,
-			options
+			element: element,
+			options: options
 		};
 
 		if (options.activate === undefined || options.activate) {
