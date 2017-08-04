@@ -6,6 +6,7 @@ var StringReplacePlugin = require("string-replace-webpack-plugin");
 module.exports = {
 	entry: {
 		"component": "./src/index.js",
+		"sample": "./test/manual/sample.js",
 	},
 	output: {
 		path: path.resolve(__dirname, "../dist"),
@@ -34,7 +35,7 @@ module.exports = {
 					"plugins": [
 						"add-module-exports",
 						"transform-es3-property-literals",
-        		"transform-es3-member-expression-literals"
+        				"transform-es3-member-expression-literals"
 					]
 				}
 			},

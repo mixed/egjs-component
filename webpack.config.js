@@ -10,13 +10,13 @@ module.exports = function(env) {
 	env = env || {};
 
 	if (!/server/.test(env.mode)) {
-		config.module.rules.push({
-			test: /(\.js)$/,
-			loader: "eslint-loader",
-			include: path.resolve(process.cwd(), "src"),
-			exclude: /(node_modules)/,
-			enforce: "pre",
-		});
+		// config.module.rules.push({
+		// 	test: /(\.js)$/,
+		// 	loader: "eslint-loader",
+		// 	include: path.resolve(process.cwd(), "src"),
+		// 	exclude: /(node_modules)/,
+		// 	enforce: "pre",
+		// });
 	}
 
 	if (env === "production") {
