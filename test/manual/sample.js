@@ -1,10 +1,10 @@
 import Component from "../../src/index";
 
 class Sample extends Component{
-	constructor(id,{activate=true}){
+	constructor(id,options){
 		// activate는 default가 true
 		// 없으면 호출하지 않음
-		super(activate);
+		super(id,options);
 	}
 	setupProp(){
 		console.log("====>setupProp");
@@ -18,8 +18,9 @@ class Sample extends Component{
 }
 
 const sample = new Sample("#hi",{
-
+	"activate" : false
 });
+
 sample.on("beforeSetupProp",(e) => {
 	console.log("beforeSetupProp");
 });

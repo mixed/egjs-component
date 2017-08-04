@@ -12,14 +12,21 @@ class Component {
 	/**
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
-	constructor(activate = true) {
+	constructor(element, options = {activate: true}) {
 		this._eventHandler = {};
 		this.options = {};
 		this.props = {};
-		if (activate) {
+		this.param = {
+			element,
+			options
+		};
+
+		if (options.activate === undefined || options.activate) {
+			this.param.options.activate = true;
 			this.activate();
+			this.props.activate = true;
 		} else {
-			this.props.activate = activate;
+			this.props.activate = options.activate;
 		}
 	}
 	/**
@@ -225,21 +232,24 @@ class Some extends eg.Component {
 	}
 
 	activate() {
+		const {element, options} = this.param;
 		if (!this.props.activate && this.trigger("beforeActivate")) {
 			if (this.setupProp && this.trigger("beforeSetupProp")) {
-				this.setupProp();
+				this.setupProp(element, options);
 				this.trigger("setupProp");
 			}
 			if (this.setupDom && this.trigger("beforeSetupDom")) {
-				this.setupDom();
+				this.setupDom(element, options);
 				this.trigger("setupDom");
 			}
 			if (this.eventAttach && this.trigger("beforeEventAttach")) {
-				this.eventAttach();
+				this.eventAttach(element, options);
 				this.trigger("eventAttach");
 			}
 			this.props.activate = true;
-			this.trigger("activate");
+			setTimeout(() => {
+				this.trigger("activate");
+			}, 0);
 		}
 		return this;
 	}
