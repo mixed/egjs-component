@@ -12,13 +12,13 @@ class Component {
 	/**
 	 * @support {"ie": "7+", "ch" : "latest", "ff" : "latest",  "sf" : "latest", "edge" : "latest", "ios" : "7+", "an" : "2.1+ (except 3.x)"}
 	 */
-	constructor(activate=true) {
+	constructor(activate = true) {
 		this._eventHandler = {};
 		this.options = {};
 		this.props = {};
-		if(activate){
+		if (activate) {
 			this.activate();
-		}else{
+		} else {
 			this.props.activate = activate;
 		}
 	}
@@ -224,17 +224,17 @@ class Some extends eg.Component {
 		return this;
 	}
 
-	activate(){
-		if(!this.props.activate&&this.trigger("beforeActivate")){
-			if(this.setupProp&&this.trigger("beforeSetupProp")){
+	activate() {
+		if (!this.props.activate && this.trigger("beforeActivate")) {
+			if (this.setupProp && this.trigger("beforeSetupProp")) {
 				this.setupProp();
 				this.trigger("setupProp");
 			}
-			if(this.setupDom&&this.trigger("beforeSetupDom")){
+			if (this.setupDom && this.trigger("beforeSetupDom")) {
 				this.setupDom();
 				this.trigger("setupDom");
 			}
-			if(this.eventAttach&&this.trigger("beforeEventAttach")){
+			if (this.eventAttach && this.trigger("beforeEventAttach")) {
 				this.eventAttach();
 				this.trigger("eventAttach");
 			}

@@ -2,7 +2,9 @@ import Component from "../../src/index";
 
 class Sample extends Component{
 	constructor(id,{activate=true}){
-		super(activate); //activate는 default가 true
+		// activate는 default가 true
+		// 없으면 호출하지 않음
+		super(activate);
 	}
 	setupProp(){
 		console.log("====>setupProp");
@@ -14,7 +16,6 @@ class Sample extends Component{
 		console.log("====>eventAttach");
 	}
 }
-
 
 const sample = new Sample("#hi",{
 
