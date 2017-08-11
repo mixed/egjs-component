@@ -16,6 +16,8 @@ class Component {
 		this._eventHandler = {};
 		this.options = {};
 		this.props = {};
+		this.watchPropList = [];
+		this.status = {};
 		this.param = {
 			element,
 			options,
@@ -25,22 +27,60 @@ class Component {
 			var oldSetupProp = this.setupProp;
 
 			this.setupProp = (element, options) => {
-				const watchPropList = oldSetupProp.call(this, element, options);
-				if( watchPropList && watchPropList.length > 0 ){
-					Component.setWatchProp(this, watchPropList);
-				}
+				this.watchPropList = oldSetupProp.call(this, element, options);
 			}
 		}
 
 		if (options.activate === undefined || options.activate) {
-			this.param.options.activate = true;
 			this.activate();
-			this.props.activate = true;
+			this.status["activate!"] = true;
 		} else {
-			this.props.activate = options.activate;
+			this.status["activate!"] = options.activate;
 		}
 
 
+	}
+
+	prop(...args) {
+		if (args.length === 2) {
+			const key = args[0];
+			const value = args[1];
+			const isWatchProp = this.watchPropList.indexOf(key) >= 0;
+
+			if (isWatchProp) {
+				if (this.trigger("beforeChangeProp",{
+					prevValue : this.props[key],
+				  	newValue : value
+				})) {
+					this.props[key] = value;
+					this.trigger("changeProp",{
+						prevValue : this.props[key],
+					  	newValue : value
+					});
+				}
+			}else{
+				this.props[key] = value;
+			}
+
+			return this;
+		}
+
+		const key = args[0];
+		if (typeof key === "string") {
+			return this.props[key];
+		}
+
+		if (args.length === 0) {
+			return this.props;
+		}
+
+		if (key.constructor === Object){
+			Object.keys(key).forEach((prop) => {
+				this.prop(prop,key[prop]);
+			});
+		}
+
+		return this;
 	}
 
 	static setWatchProp(ins, watchPropList){
@@ -81,6 +121,10 @@ class Some extends eg.Component {
 	trigger(eventName, customEvent = {}, ...restParam) {
 		let handlerList = this._eventHandler[eventName] || [];
 		const hasHandlerList = handlerList.length > 0;
+
+		if (eventName.indexOf("before") !== 0 && /\!$/.test(eventName)) {
+			this.status[eventName] = true;
+		}
 
 		if (!hasHandlerList) {
 			return true;
@@ -206,6 +250,9 @@ class Some extends eg.Component {
 			}
 
 			handlerList.push(handlerToAttach);
+			if (this.status[eventName]){
+				this.trigger(eventName);
+			}
 		}
 
 		return this;
@@ -271,7 +318,7 @@ class Some extends eg.Component {
 		const {element} = this.param;
 		const {options} = this.param;
 
-		if (!this.props.activate && this.trigger("beforeActivate")) {
+		if (!this.status["activate!"]&& this.trigger("beforeActivate")) {
 			if (this.setupProp && this.trigger("beforeSetupProp")) {
 				this.setupProp(element, options);
 				this.trigger("setupProp");
@@ -284,10 +331,8 @@ class Some extends eg.Component {
 				this.eventAttach(element, options);
 				this.trigger("eventAttach");
 			}
-			this.props.activate = true;
-			setTimeout(() => {
-				this.trigger("activate");
-			}, 0);
+			this.status["activate!"] = true;
+			this.trigger("activate!");
 		}
 		return this;
 	}
