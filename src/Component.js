@@ -24,11 +24,11 @@ class Component {
 		};
 
 		if (this.setupProp) {
-			var oldSetupProp = this.setupProp;
+			const oldSetupProp = this.setupProp;
 
-			this.setupProp = (element, options) => {
-				this.watchPropList = oldSetupProp.call(this, element, options);
-			}
+			this.setupProp = (ele, opts) => {
+				this.watchPropList = oldSetupProp.call(this, ele, opts);
+			};
 		}
 
 		if (options.activate === undefined || options.activate) {
@@ -37,8 +37,6 @@ class Component {
 		} else {
 			this.status["activate!"] = options.activate;
 		}
-
-
 	}
 
 	prop(...args) {
@@ -48,17 +46,17 @@ class Component {
 			const isWatchProp = this.watchPropList.indexOf(key) >= 0;
 
 			if (isWatchProp) {
-				if (this.trigger("beforeChangeProp",{
-					prevValue : this.props[key],
-				  	newValue : value
+				if (this.trigger("beforeChangeProp", {
+					prevValue: this.props[key],
+					newValue: value,
 				})) {
 					this.props[key] = value;
-					this.trigger("changeProp",{
-						prevValue : this.props[key],
-					  	newValue : value
+					this.trigger("changeProp", {
+						prevValue: this.props[key],
+						newValue: value,
 					});
 				}
-			}else{
+			} else {
 				this.props[key] = value;
 			}
 
@@ -66,6 +64,7 @@ class Component {
 		}
 
 		const key = args[0];
+
 		if (typeof key === "string") {
 			return this.props[key];
 		}
@@ -74,37 +73,15 @@ class Component {
 			return this.props;
 		}
 
-		if (key.constructor === Object){
-			Object.keys(key).forEach((prop) => {
-				this.prop(prop,key[prop]);
+		if (key.constructor === Object) {
+			Object.keys(key).forEach(prop => {
+				this.prop(prop, key[prop]);
 			});
 		}
 
 		return this;
 	}
 
-	static setWatchProp(ins, watchPropList){
-		watchPropList.forEach(prop => {
-			Object.defineProperty(ins.props, prop, {
-			  set: (function() {
-			  	return function(newValue){
-			  		if (ins.trigger("beforeChangeProp",{
-			  			prevValue : ins.props[prop],
-			  			newValue
-			  		})) {
-						ins.trigger("changeProp",{
-				  			prevValue : ins.props[prop],
-				  			newValue
-				  		})
-			  		}
-			  	}
-			  })(),
-			  enumerable: true,
-			  configurable: true
-			});
-		})
-
-	}
 	/**
 	 * Triggers a custom event.
 	 * @ko 커스텀 이벤트를 발생시킨다
@@ -122,7 +99,7 @@ class Some extends eg.Component {
 		let handlerList = this._eventHandler[eventName] || [];
 		const hasHandlerList = handlerList.length > 0;
 
-		if (eventName.indexOf("before") !== 0 && /\!$/.test(eventName)) {
+		if (eventName.indexOf("before") !== 0 && /!$/.test(eventName)) {
 			this.status[eventName] = true;
 		}
 
@@ -250,7 +227,7 @@ class Some extends eg.Component {
 			}
 
 			handlerList.push(handlerToAttach);
-			if (this.status[eventName]){
+			if (this.status[eventName]) {
 				this.trigger(eventName);
 			}
 		}
@@ -318,7 +295,7 @@ class Some extends eg.Component {
 		const {element} = this.param;
 		const {options} = this.param;
 
-		if (!this.status["activate!"]&& this.trigger("beforeActivate")) {
+		if (!this.status["activate!"] && this.trigger("beforeActivate")) {
 			if (this.setupProp && this.trigger("beforeSetupProp")) {
 				this.setupProp(element, options);
 				this.trigger("setupProp");
