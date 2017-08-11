@@ -21,6 +21,17 @@ class Component {
 			options,
 		};
 
+		if (this.setupProp) {
+			var oldSetupProp = this.setupProp;
+
+			this.setupProp = (element, options) => {
+				const watchPropList = oldSetupProp.call(this, element, options);
+				if( watchPropList && watchPropList.length > 0 ){
+					Component.setWatchProp(this, watchPropList);
+				}
+			}
+		}
+
 		if (options.activate === undefined || options.activate) {
 			this.param.options.activate = true;
 			this.activate();
@@ -28,6 +39,31 @@ class Component {
 		} else {
 			this.props.activate = options.activate;
 		}
+
+
+	}
+
+	static setWatchProp(ins, watchPropList){
+		watchPropList.forEach(prop => {
+			Object.defineProperty(ins.props, prop, {
+			  set: (function() {
+			  	return function(newValue){
+			  		if (ins.trigger("beforeChangeProp",{
+			  			prevValue : ins.props[prop],
+			  			newValue
+			  		})) {
+						ins.trigger("changeProp",{
+				  			prevValue : ins.props[prop],
+				  			newValue
+				  		})
+			  		}
+			  	}
+			  })(),
+			  enumerable: true,
+			  configurable: true
+			});
+		})
+
 	}
 	/**
 	 * Triggers a custom event.

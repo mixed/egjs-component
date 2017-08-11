@@ -7,7 +7,7 @@ class Sample extends Component{
 		super(id,options);
 	}
 	setupProp(){
-		console.log("====>setupProp");
+		return ["test"];
 	}
 	setupDom(){
 		console.log("====>setupDom");
@@ -21,29 +21,43 @@ const sample = new Sample("#hi",{
 	"activate" : false
 });
 
-sample.on("beforeSetupProp",(e) => {
-	console.log("beforeSetupProp");
+// sample.on("beforeSetupProp",(e) => {
+// 	console.log("beforeSetupProp");
+// });
+// sample.on("setupProp",(e) => {
+// 	console.log("setupProp");
+// });
+// sample.on("beforeSetupDom",(e) => {
+// 	console.log("beforeSetupDom");
+// });
+// sample.on("setupDom",(e) => {
+// 	console.log("setupDom");
+// });
+// sample.on("beforeEventAttach",(e) => {
+// 	console.log("beforeEventAttach");
+// });
+// sample.on("eventAttach",(e) => {
+// 	console.log("eventAttach");
+// });
+// sample.on("beforeActivate",(e) => {
+// 	console.log("beforeActivate");
+// });
+// sample.on("activate",(e) => {
+// 	console.log("activate");
+// });
+
+sample.on("beforeChangeProp",(e) => {
+	console.log("beforeChangeProp");
+	console.log(e.newValue);
+	console.log(e.prevValue);
 });
-sample.on("setupProp",(e) => {
-	console.log("setupProp");
+sample.on("changeProp",(e) => {
+	console.log("changeProp");
+	console.log(e.newValue);
+	console.log(e.prevValue);
 });
-sample.on("beforeSetupDom",(e) => {
-	console.log("beforeSetupDom");
-});
-sample.on("setupDom",(e) => {
-	console.log("setupDom");
-});
-sample.on("beforeEventAttach",(e) => {
-	console.log("beforeEventAttach");
-});
-sample.on("eventAttach",(e) => {
-	console.log("eventAttach");
-});
-sample.on("beforeActivate",(e) => {
-	console.log("beforeActivate");
-});
-sample.on("activate",(e) => {
-	console.log("activate");
-});
+sample.props.test  = 1 ;
 
 sample.activate();
+
+window.sample = sample;
