@@ -58,9 +58,10 @@ describe("Basic test", function() {
 		function getPropertyCount(obj) {
 			let count = 0;
 			for(let prop in obj) {
+
 				if(Object.prototype.hasOwnProperty.call(window, prop)) {
 					// remove constructor (es6) in case of phantomjs
-					if(prop !== "constructor") {
+					if(prop !== "constructor" && prop !== "status") {
 						count = count + 1;
 					}
 				}
@@ -258,9 +259,9 @@ describe("trigger method", function() {
 		//Then
 		expect(eventType).equal("eventType");
 		expect(stopType).equal("function");
-		});
-	
-		it("shouldn't call extended method when the Array is extends", () => {
+	});
+
+	it("shouldn't call extended method when the Array is extends", () => {
 		//Given
 		Array.prototype.ExtendSomthing = sinon.spy();
 		oClass.on("eventType", function() {});
@@ -268,8 +269,21 @@ describe("trigger method", function() {
 		oClass.trigger("eventType");
 		//Then
 		expect(Array.prototype.ExtendSomthing.called).to.be.false;
+
+	});
+	delete Array.prototype.ExtendSomthing;
+
+	it("The currentTarget should be included in event", () => {
+		//Given
+		let instance;
+		oClass.on("eventType", ({currentTarget}) => {
+			instance = currentTarget;
 		});
-		delete Array.prototype.ExtendSomthing;
+		//When
+		oClass.trigger("eventType");
+		//Then
+		expect(oClass).equal(instance);
+	});
 });
 
 describe("stop method", function() {

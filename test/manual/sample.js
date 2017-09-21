@@ -22,9 +22,14 @@ class Sample extends Component{
 
 const sample = new Sample("#hi",{
 });
+sample.on("sample",(e) => {
+	console.log("sample %o",this);
+	console.log("activate!!!!!!!!!!!!!!!!");
+});
 
 // postfix로 !을 넣으면 이미 지나간 이벤트라도 fire됨.
-sample.on("activate!",(e) => {
+sample.on("activate!",function(e){
+	console.log(this);
 	console.log("activate!!!!!!!!!!!!!!!!");
 });
 
@@ -33,6 +38,7 @@ sample.prop("test",1000);
 
 // 속성 변경 전
 sample.on("beforeChangeProp",(e) => {
+	console.log("beforeChangeProp %o",this);
 	console.log("beforeChangeProp");
 	console.log(e.newValue); // 새로운 값
 	console.log(e.prevValue); // 기본 값
@@ -41,7 +47,10 @@ sample.on("beforeChangeProp",(e) => {
 
 // 속성 변경 후
 sample.on("changeProp",(e) => {
+	console.log("changeProp %o",this);
 	console.log("changeProp");
 	console.log(e.newValue);
 	console.log(e.prevValue);
 });
+
+sample.trigger("sample");

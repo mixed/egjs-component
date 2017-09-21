@@ -117,6 +117,7 @@ class Some extends eg.Component {
 		let i = 0;
 
 		customEvent.stop = () => { isCanceled = true; };
+		customEvent.currentTarget = this;
 
 
 		if (restParam.length >= 1) {
